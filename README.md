@@ -1,10 +1,7 @@
-# IUH - Đại học Công nghiệp Thành phố Hồ Chí Minh
-
+# TLA - Đại học THủy Lợi
 ## Môn: Phát triển ứng dụng
 ## Đề tài: **Quản lý Hiệu Thuốc tây**
 
->Ý tưởng thiết kế UI: [Quản lý kho điện thoại - hgbaodev](https://github.com/hgbaodev/QuanLyKhoDienThoai)
->
 ## Technology
 - Java
 - SQL Server
