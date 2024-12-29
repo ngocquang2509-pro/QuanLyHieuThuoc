@@ -1,4 +1,4 @@
-# TLA - Đại học THủy Lợi
+# TLU - Đại học THủy Lợi
 ## Môn: Phát triển ứng dụng
 ## Đề tài: **Quản lý Hiệu Thuốc tây**
 
