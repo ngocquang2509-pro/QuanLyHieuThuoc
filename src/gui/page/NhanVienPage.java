@@ -3,11 +3,14 @@ package gui.page;
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import controller.NhanVienController;
+import dao.NhanVienDAO;
 import entities.NhanVien;
 import gui.dialog.CreateNhanVienDialog;
 import gui.dialog.UpdateNhanVienDialog;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -30,6 +33,7 @@ public class NhanVienPage extends javax.swing.JPanel {
         initComponents();
         headerLayout();
         tableLayout();
+        btnExport.setIcon(new FlatSVGIcon("./icon/gift.svg"));
     }
 
     private void headerLayout() {
@@ -104,9 +108,9 @@ public class NhanVienPage extends javax.swing.JPanel {
         btnAdd = new javax.swing.JButton();
         btnUpdate = new javax.swing.JButton();
         btnDelete = new javax.swing.JButton();
+        btnExport = new javax.swing.JButton();
         btnInfo = new javax.swing.JButton();
         btnImport = new javax.swing.JButton();
-        btnExport = new javax.swing.JButton();
         tablePanel = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
@@ -133,6 +137,11 @@ public class NhanVienPage extends javax.swing.JPanel {
 
         cboxSearch.setToolTipText("");
         cboxSearch.setPreferredSize(new java.awt.Dimension(100, 40));
+        cboxSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboxSearchActionPerformed(evt);
+            }
+        });
         jPanel3.add(cboxSearch);
 
         txtSearch.setToolTipText("Tìm kiếm");
@@ -220,6 +229,23 @@ public class NhanVienPage extends javax.swing.JPanel {
         });
         actionPanel.add(btnDelete);
 
+        btnExport.setFont(new java.awt.Font("Roboto", 1, 14)); // NOI18N
+        btnExport.setIcon(new FlatSVGIcon("./icon/export.svg"));
+        btnExport.setText("THƯỞNG ");
+        btnExport.setBorder(null);
+        btnExport.setBorderPainted(false);
+        btnExport.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnExport.setFocusPainted(false);
+        btnExport.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnExport.setPreferredSize(new java.awt.Dimension(90, 90));
+        btnExport.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnExport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExportActionPerformed(evt);
+            }
+        });
+        actionPanel.add(btnExport);
+
         btnInfo.setFont(new java.awt.Font("Roboto", 1, 14)); // NOI18N
         btnInfo.setIcon(new FlatSVGIcon("./icon/info.svg"));
         btnInfo.setText("INFO");
@@ -230,6 +256,11 @@ public class NhanVienPage extends javax.swing.JPanel {
         btnInfo.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnInfo.setPreferredSize(new java.awt.Dimension(90, 90));
         btnInfo.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnInfo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnInfoActionPerformed(evt);
+            }
+        });
         actionPanel.add(btnInfo);
 
         btnImport.setFont(new java.awt.Font("Roboto", 1, 14)); // NOI18N
@@ -248,23 +279,6 @@ public class NhanVienPage extends javax.swing.JPanel {
             }
         });
         actionPanel.add(btnImport);
-
-        btnExport.setFont(new java.awt.Font("Roboto", 1, 14)); // NOI18N
-        btnExport.setIcon(new FlatSVGIcon("./icon/export.svg"));
-        btnExport.setText("EXPORT");
-        btnExport.setBorder(null);
-        btnExport.setBorderPainted(false);
-        btnExport.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnExport.setFocusPainted(false);
-        btnExport.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnExport.setPreferredSize(new java.awt.Dimension(90, 90));
-        btnExport.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnExport.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnExportActionPerformed(evt);
-            }
-        });
-        actionPanel.add(btnExport);
 
         headerPanel.add(actionPanel, java.awt.BorderLayout.WEST);
 
@@ -302,7 +316,6 @@ public class NhanVienPage extends javax.swing.JPanel {
         table.setFocusable(false);
         table.setRowHeight(40);
         table.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        table.setShowHorizontalLines(true);
         jScrollPane1.setViewportView(table);
         if (table.getColumnModel().getColumnCount() > 0) {
             table.getColumnModel().getColumn(1).setPreferredWidth(200);
@@ -364,7 +377,12 @@ public class NhanVienPage extends javax.swing.JPanel {
     }//GEN-LAST:event_btnImportActionPerformed
 
     private void btnExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportActionPerformed
-        JTableExporter.exportJTableToExcel(table);
+        NhanVienDAO nv = new NhanVienDAO();
+        try {
+            nv.selectNv6Month();
+        } catch (Exception ex) {
+            Logger.getLogger(NhanVienPage.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnExportActionPerformed
 
     private void txtSearchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchKeyReleased
@@ -386,7 +404,28 @@ public class NhanVienPage extends javax.swing.JPanel {
         txtSearch.setText("");
         cboxSearch.setSelectedIndex(0);
         loadTable();
+        
     }//GEN-LAST:event_btnReloadActionPerformed
+
+    private void cboxSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboxSearchActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cboxSearchActionPerformed
+
+    private void btnInfoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInfoActionPerformed
+        // TODO add your handling code here:
+        try {
+            int row = table.getSelectedRow();
+            String id = table.getValueAt(row, 1).toString();
+            NhanVienDAO nv = new NhanVienDAO();
+            try {
+                nv.info_nv(id);
+            } catch (Exception ex) {
+                Logger.getLogger(NhanVienPage.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            } catch (Exception e) {
+                MessageDialog.error(this, "Vui lòng chọn dòng cần thực hiện!");
+            }
+    }//GEN-LAST:event_btnInfoActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

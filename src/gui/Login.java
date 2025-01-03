@@ -59,7 +59,7 @@ public class Login extends javax.swing.JFrame {
         String password = txtPassword.getText();
 
         if (isValidateFields()) {
-            TaiKhoan tk = new TaiKhoanController().selectByUsername(username);
+            TaiKhoan tk = new TaiKhoanController().selectByUsername(username,password);
 
             if (tk == null) {
                 MessageDialog.error(this, "Tài khoản không tồn tại!");

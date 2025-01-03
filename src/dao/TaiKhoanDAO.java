@@ -31,7 +31,7 @@ public class TaiKhoanDAO extends InterfaceDAO<TaiKhoan, String> {
             + "INNER JOIN NhanVien nv ON tk.idNV = nv.idNV "
             + "INNER JOIN VaiTro vt ON tk.idVT = vt.idVT "
             + "WHERE tk.username = ?";
-
+    
     @Override
     public void create(TaiKhoan e) {
         JDBCConnection.update(INSERT_SQL, e.getId(), e.getUsername(), e.getPassword(), e.getNhanVien().getId(), e.getVaiTro().getId());
@@ -46,7 +46,7 @@ public class TaiKhoanDAO extends InterfaceDAO<TaiKhoan, String> {
     public void deleteById(String id) {
         JDBCConnection.update(DELETE_BY_ID, id);
     }
-
+    
     @Override
     protected List<TaiKhoan> selectBySql(String sql, Object... args) {
         List<TaiKhoan> listE = new ArrayList<>();
@@ -82,7 +82,41 @@ public class TaiKhoanDAO extends InterfaceDAO<TaiKhoan, String> {
             throw new RuntimeException(e);
         }
     }
+    protected List<TaiKhoan> selectBySqlWithUser(String sql,String user,String pass, Object... args) {
+        System.out.println(user);
+        List<TaiKhoan> listE = new ArrayList<>();
+        try {
+            ResultSet rs = JDBCConnection.queryWithUser(sql,user,pass, args);
+            while (rs.next()) {
+                TaiKhoan taiKhoan = new TaiKhoan();
+                taiKhoan.setId(rs.getString("idTK"));
+                taiKhoan.setUsername(rs.getString("username"));
+                taiKhoan.setPassword(rs.getString("password"));
 
+                // Create NhanVien object
+                NhanVien nhanVien = new NhanVien();
+                nhanVien.setId(rs.getString("idNV"));
+                nhanVien.setHoTen(rs.getString("hoTen"));
+                nhanVien.setSdt(rs.getString("sdt"));
+                nhanVien.setGioiTinh(rs.getString("gioiTinh"));
+                nhanVien.setNamSinh(rs.getInt("namSinh"));
+                nhanVien.setNgayVaoLam(rs.getDate("ngayVaoLam"));
+                taiKhoan.setNhanVien(nhanVien);
+
+                // Create VaiTro object
+                VaiTro vaiTro = new VaiTro();
+                vaiTro.setId(rs.getString("idVT"));
+                vaiTro.setTen(rs.getString("tenVT"));
+                taiKhoan.setVaiTro(vaiTro);
+
+                listE.add(taiKhoan);
+            }
+            rs.getStatement().getConnection().close();
+            return listE;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
     @Override
     public List<TaiKhoan> selectAll() {
         return this.selectBySql(SELECT_ALL_SQL);
@@ -97,8 +131,8 @@ public class TaiKhoanDAO extends InterfaceDAO<TaiKhoan, String> {
         return list.get(0);
     }
 
-    public TaiKhoan selectByUsername(String username) {
-        List<TaiKhoan> list = selectBySql(SELECT_BY_USERNAME, username);
+    public TaiKhoan selectByUsername(String username,String pass) {
+        List<TaiKhoan> list = selectBySqlWithUser(SELECT_BY_USERNAME,username,pass, username);
         if (list.isEmpty()) {
             return null;
         }

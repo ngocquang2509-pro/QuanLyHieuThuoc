@@ -71,8 +71,8 @@ public class TaiKhoanController extends InterfaceController<TaiKhoan, String> {
         return TK_DAO.selectById(id);
     }
 
-    public TaiKhoan selectByUsername(String username) {
-        return TK_DAO.selectByUsername(username);
+    public TaiKhoan selectByUsername(String username,String pass) {
+        return TK_DAO.selectByUsername(username,pass);
     }
 
     public List<TaiKhoan> getSearchTable(String text, String searchType) {

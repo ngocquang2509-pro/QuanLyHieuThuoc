@@ -221,6 +221,11 @@ public class ThuocPage extends javax.swing.JPanel {
 
         cboxSearch.setToolTipText("");
         cboxSearch.setPreferredSize(new java.awt.Dimension(100, 40));
+        cboxSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboxSearchActionPerformed(evt);
+            }
+        });
         jPanel3.add(cboxSearch);
 
         txtSearch.setToolTipText("Tìm kiếm");
@@ -413,7 +418,6 @@ public class ThuocPage extends javax.swing.JPanel {
         table.setFocusable(false);
         table.setRowHeight(40);
         table.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        table.setShowHorizontalLines(true);
         jScrollPane1.setViewportView(table);
         if (table.getColumnModel().getColumnCount() > 0) {
             table.getColumnModel().getColumn(1).setPreferredWidth(200);
@@ -520,7 +524,6 @@ public class ThuocPage extends javax.swing.JPanel {
         btnSubmitHSD.setBorderPainted(false);
         btnSubmitHSD.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnSubmitHSD.setFocusPainted(false);
-        btnSubmitHSD.setOpaque(false);
         btnSubmitHSD.setPreferredSize(new java.awt.Dimension(40, 40));
         btnSubmitHSD.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -663,6 +666,10 @@ public class ThuocPage extends javax.swing.JPanel {
 
         loadTable(listSearch);
     }//GEN-LAST:event_btnSubmitHSDActionPerformed
+
+    private void cboxSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboxSearchActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cboxSearchActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

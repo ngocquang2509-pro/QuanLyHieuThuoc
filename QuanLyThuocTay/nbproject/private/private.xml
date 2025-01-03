@@ -3,18 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/E:/quan-ly-thuoc-tay/src/controller/DanhMucController.java</file>
-            <file>file:/E:/quan-ly-thuoc-tay/src/gui/barchart/LegendItem.java</file>
             <file>file:/E:/quan-ly-thuoc-tay/src/connectDB/JDBCConnection.java</file>
-            <file>file:/E:/quan-ly-thuoc-tay/src/gui/barchart/ModelLegend.java</file>
-            <file>file:/E:/quan-ly-thuoc-tay/src/entities/KhachHang.java</file>
-            <file>file:/E:/quan-ly-thuoc-tay/src/dao/ThongKeDAO.java</file>
-            <file>file:/E:/quan-ly-thuoc-tay/src/gui/barchart/LabelColor.java</file>
-            <file>file:/E:/quan-ly-thuoc-tay/src/controller/ThongKeController.java</file>
-            <file>file:/E:/quan-ly-thuoc-tay/src/gui/barchart/ModelChart.java</file>
-            <file>file:/E:/quan-ly-thuoc-tay/src/gui/barchart/Chart.java</file>
-            <file>file:/E:/quan-ly-thuoc-tay/src/gui/Login.java</file>
-            <file>file:/E:/quan-ly-thuoc-tay/src/entities/TaiKhoan.java</file>
+            <file>file:/E:/quan-ly-thuoc-tay/src/gui/page/NhanVienPage.java</file>
+            <file>file:/E:/quan-ly-thuoc-tay/src/icon/export.svg</file>
+            <file>file:/E:/quan-ly-thuoc-tay/src/icon/gift.svg</file>
+            <file>file:/E:/quan-ly-thuoc-tay/src/dao/NhanVienDAO.java</file>
         </group>
     </open-files>
 </project-private>

@@ -6,6 +6,7 @@ import entities.TaiKhoan;
 import gui.dialog.InfoDialog;
 import gui.page.HoaDonPage;
 import gui.page.KhachHangPage;
+import gui.page.LuongPage;
 import gui.page.NhaCungCapPage;
 import gui.page.NhanVienPage;
 import gui.page.PhieuNhapPage;
@@ -33,6 +34,7 @@ public class MainLayout extends javax.swing.JFrame {
     private NhaCungCapPage nhaCungCap;
     private KhachHangPage khachHang;
     private NhanVienPage nhanVien;
+    private LuongPage LuongPage;
     private TaiKhoanPage taiKhoan;
     private VaiTroPage vaiTro;
     private PhieuNhapPage phieuNhap;
@@ -117,7 +119,7 @@ public class MainLayout extends javax.swing.JFrame {
             item.setBackground(Color.WHITE);
         }
     }
-
+//check role
     private void checkRole(String role) {
         if (role.equals("nvbh")) {
             phieuNhapItem.setEnabled(false);
@@ -136,13 +138,13 @@ public class MainLayout extends javax.swing.JFrame {
             taiKhoanItem.setEnabled(false);
         }
 
-        if (role.equals("nvql")) {
-            hoaDonItem.setEnabled(false);
-            khachHangItem.setEnabled(false);
-            phieuNhapItem.setEnabled(false);
-            nhaCungCapItem.setEnabled(false);
-            thuocItem.setEnabled(false);
-        }
+//        if (role.equals("nvql")) {
+//            hoaDonItem.setEnabled(false);
+//            khachHangItem.setEnabled(false);
+//            phieuNhapItem.setEnabled(false);
+//            nhaCungCapItem.setEnabled(false);
+//            thuocItem.setEnabled(false);
+//        }
     }
 
     @SuppressWarnings("unchecked")
@@ -153,15 +155,16 @@ public class MainLayout extends javax.swing.JFrame {
         sidebarPanel = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         itemPanel = new javax.swing.JPanel();
-        thongKeItem = new javax.swing.JButton();
         hoaDonItem = new javax.swing.JButton();
         khachHangItem = new javax.swing.JButton();
+        thongKeItem = new javax.swing.JButton();
         jSeparator2 = new javax.swing.JSeparator();
         thuocItem = new javax.swing.JButton();
         phieuNhapItem = new javax.swing.JButton();
         nhaCungCapItem = new javax.swing.JButton();
         jSeparator3 = new javax.swing.JSeparator();
         nhanVienItem = new javax.swing.JButton();
+        LuongItem = new javax.swing.JButton();
         taiKhoanItem = new javax.swing.JButton();
         vaiTroItem = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
@@ -193,23 +196,6 @@ public class MainLayout extends javax.swing.JFrame {
         itemPanel.setBackground(new java.awt.Color(255, 255, 255));
         itemPanel.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(255, 255, 255), 8, true));
         itemPanel.setPreferredSize(new java.awt.Dimension(250, 550));
-
-        thongKeItem.setFont(new java.awt.Font("Roboto Medium", 0, 14)); // NOI18N
-        thongKeItem.setIcon(new FlatSVGIcon("./icon/statistics.svg"));
-        thongKeItem.setText("Biểu đồ");
-        thongKeItem.setBorderPainted(false);
-        thongKeItem.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        thongKeItem.setFocusPainted(false);
-        thongKeItem.setFocusable(false);
-        thongKeItem.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
-        thongKeItem.setIconTextGap(16);
-        thongKeItem.setPreferredSize(new java.awt.Dimension(226, 46));
-        thongKeItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                thongKeItemActionPerformed(evt);
-            }
-        });
-        itemPanel.add(thongKeItem);
 
         hoaDonItem.setFont(new java.awt.Font("Roboto Medium", 0, 14)); // NOI18N
         hoaDonItem.setIcon(new FlatSVGIcon("./icon/bill.svg"));
@@ -244,6 +230,23 @@ public class MainLayout extends javax.swing.JFrame {
             }
         });
         itemPanel.add(khachHangItem);
+
+        thongKeItem.setFont(new java.awt.Font("Roboto Medium", 0, 14)); // NOI18N
+        thongKeItem.setIcon(new FlatSVGIcon("./icon/statistics.svg"));
+        thongKeItem.setText("Biểu đồ");
+        thongKeItem.setBorderPainted(false);
+        thongKeItem.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        thongKeItem.setFocusPainted(false);
+        thongKeItem.setFocusable(false);
+        thongKeItem.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
+        thongKeItem.setIconTextGap(16);
+        thongKeItem.setPreferredSize(new java.awt.Dimension(226, 46));
+        thongKeItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                thongKeItemActionPerformed(evt);
+            }
+        });
+        itemPanel.add(thongKeItem);
 
         jSeparator2.setPreferredSize(new java.awt.Dimension(230, 2));
         itemPanel.add(jSeparator2);
@@ -318,6 +321,23 @@ public class MainLayout extends javax.swing.JFrame {
             }
         });
         itemPanel.add(nhanVienItem);
+
+        LuongItem.setFont(new java.awt.Font("Roboto Medium", 0, 14)); // NOI18N
+        LuongItem.setIcon(new FlatSVGIcon("./icon/employee.svg"));
+        LuongItem.setText("Lương ");
+        LuongItem.setBorderPainted(false);
+        LuongItem.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        LuongItem.setFocusPainted(false);
+        LuongItem.setFocusable(false);
+        LuongItem.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
+        LuongItem.setIconTextGap(16);
+        LuongItem.setPreferredSize(new java.awt.Dimension(226, 46));
+        LuongItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                LuongItemActionPerformed(evt);
+            }
+        });
+        itemPanel.add(LuongItem);
 
         taiKhoanItem.setFont(new java.awt.Font("Roboto Medium", 0, 14)); // NOI18N
         taiKhoanItem.setIcon(new FlatSVGIcon("./icon/account.svg"));
@@ -424,8 +444,8 @@ public class MainLayout extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtRole, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
-                    .addComponent(txtFullName, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE))
+                    .addComponent(txtRole, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtFullName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -544,8 +564,17 @@ public class MainLayout extends javax.swing.JFrame {
         thongKeItem.setSelected(true);
     }//GEN-LAST:event_thongKeItemActionPerformed
 
+    private void LuongItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LuongItemActionPerformed
+        // TODO add your handling code here:
+        LuongPage = new LuongPage();
+        this.setPanel(LuongPage);
+        resetActive();
+        LuongItem.setSelected(true);
+    }//GEN-LAST:event_LuongItemActionPerformed
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton LuongItem;
     private javax.swing.JButton btnInfo;
     private javax.swing.JButton btnLogout;
     private javax.swing.JButton hoaDonItem;

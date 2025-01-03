@@ -5,6 +5,7 @@ import entities.NhanVien;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JOptionPane;
 
 public class NhanVienDAO extends InterfaceDAO<NhanVien, String> {
 
@@ -14,7 +15,34 @@ public class NhanVienDAO extends InterfaceDAO<NhanVien, String> {
 
     private final String SELECT_ALL_SQL = "SELECT * FROM NhanVien ORDER BY ngayVaoLam";
     private final String SELECT_BY_ID = "SELECT * FROM NhanVien WHERE idNV = ?";
+    private final String select_nv_6_month = "SELECT * FROM dbo.fn_NhanVien6ThangTroLen()";
 
+    public void info_nv(String id) throws Exception{
+        JDBCConnection.callProduce(id);
+    }
+    public void selectNv6Month() throws Exception{
+        ResultSet rs = JDBCConnection.query(select_nv_6_month);
+        StringBuilder result = new StringBuilder("Danh sách nhân viên đươc thưởng(6 tháng trở lên):\n\n");
+
+            while (rs.next()) {
+                String idNV = rs.getString("idNV");
+                String hoTen = rs.getString("hoTen");
+                String ngayVaoLam = rs.getString("ngayVaoLam");
+
+                // Thêm thông tin vào chuỗi
+                result.append("ID: ").append(idNV)
+                      .append(", Họ Tên: ").append(hoTen)
+                      .append(", Ngày Vào Làm: ").append(ngayVaoLam)
+                      .append("\n");
+            }
+
+            // Hiển thị thông tin trong JOptionPane
+            if (result.toString().equals("Danh sách nhân viên (6 tháng trở lên):\n\n")) {
+                JOptionPane.showMessageDialog(null, "Không có nhân viên nào có ngày vào làm từ 6 tháng trở lên.", "Thông Báo", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(null, result.toString(), "Danh Sách Nhân Viên", JOptionPane.INFORMATION_MESSAGE);
+            }
+    }
     @Override
     public void create(NhanVien e) {
         JDBCConnection.update(INSERT_SQL, e.getId(), e.getHoTen(), e.getSdt(), e.getGioiTinh(), e.getNamSinh(), e.getNgayVaoLam());
