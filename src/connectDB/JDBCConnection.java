@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.*;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -82,16 +83,6 @@ public class JDBCConnection {
             
             return 0;
         }
-        if (e.getMessage().contains("Ngày vào làm không được nhỏ hơn ngày hôm nay!")) {
-                JOptionPane.showMessageDialog(
-                null,
-                "Ngày vào làm không được nhỏ hơn ngày hôm nay!",
-                "Lỗi",
-                JOptionPane.ERROR_MESSAGE
-            );
-            
-            return 0;
-        }
             throw new RuntimeException(e);
         }
     }
@@ -119,4 +110,113 @@ public class JDBCConnection {
         boolean hasResults = callableStatement.execute();
         System.out.println(hasResults);
     }
+    public static DefaultTableModel selectAllLuong() throws Exception{
+        String sql = "SELECT * FROM dbo.GetLuong()";
+        PreparedStatement ps = JDBCConnection.getStmt(sql);
+        ResultSet rs = ps.executeQuery();
+        String[] header = {"STT", "Mã nhân viên", "Tên nhân viên", "Lương"};
+        DefaultTableModel model = new DefaultTableModel(header, 0);
+        int stt = 1; // Đếm số thứ tự
+        while (rs.next()) {
+            String maNV = rs.getString("Ma");
+            String tenNV = rs.getString("HoTen");
+            float luong = rs.getFloat("Luong");
+            
+            // Thêm dữ liệu vào model
+            model.addRow(new Object[]{stt++, maNV, tenNV, luong});
+        }
+        return model;
+    }
+    public static String[] selectNameNV() throws Exception{
+        String sql = "select * from ViewTenNVkLuong";
+        PreparedStatement ps = JDBCConnection.getStmt(sql);
+        ResultSet rs = ps.executeQuery();
+        String[] names = new String[100];
+        int index = 0;
+        while (rs.next()) {
+            names[index++] = rs.getString("hoTen");  // Lấy tên từ cột "hoTen"
+        }
+        return names;
+    }
+    public static String selectIDNV(String name) throws Exception{
+        String sql = "select idNV from NhanVien where hoTen = ?";
+        PreparedStatement ps = JDBCConnection.getStmt(sql);
+        ps.setString(1, name);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+        // Giả sử thủ tục trả về một cột duy nhất, lấy giá trị từ cột đó
+        return rs.getString(1);  // Trả về giá trị từ cột đầu tiên
+    }
+        return null;
+    }
+    public static String selectPhuCap(String name) throws Exception{
+        String sql = "exec GetPhuCap ?";
+        PreparedStatement ps = JDBCConnection.getStmt(sql);
+        ps.setString(1, name);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+        // Giả sử thủ tục trả về một cột duy nhất, lấy giá trị từ cột đó
+        return rs.getString(1);  // Trả về giá trị từ cột đầu tiên
+    }
+        return null;
+    }
+    public static String selectSoNgayCong(String id) throws Exception{
+        String sql = "select SoNgayCong from BangLuong where idNV = ?";
+        PreparedStatement ps = JDBCConnection.getStmt(sql);
+        ps.setString(1, id);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+        // Giả sử thủ tục trả về một cột duy nhất, lấy giá trị từ cột đó
+        return rs.getString(1);  // Trả về giá trị từ cột đầu tiên
+    }
+        return null;
+    }
+    public static String selectThuong(String name) throws Exception{
+        String sql = "exec GetThuong ?";
+        PreparedStatement ps = JDBCConnection.getStmt(sql);
+        ps.setString(1, name);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+        // Giả sử thủ tục trả về một cột duy nhất, lấy giá trị từ cột đó
+        return rs.getString(1);  // Trả về giá trị từ cột đầu tiên
+    }
+        return null;
+    }
+    
+    public static void insertInfoLuong(String idNV, float luongCoBan, int soNgayCong, float phuCap, float thuong) throws Exception{
+        String sql = "insert into BangLuong(idNV,luongCoban,soNgayCong,phuCap,Thuong) values (?,?,?,?,?)";
+        PreparedStatement ps = JDBCConnection.getStmt(sql);
+        ps.setString(1, idNV);
+        ps.setFloat(2, luongCoBan);
+        ps.setInt(3, soNgayCong);
+        ps.setFloat(4, phuCap);
+        ps.setFloat(5, thuong);
+        int rowsAffected = ps.executeUpdate();
+        if (rowsAffected > 0) {
+            System.out.println("Thêm thông tin lương thành công cho nhân viên: " + idNV);
+        } else {
+            System.out.println("Không thể thêm thông tin lương.");
+        }
+    }
+    public static void updateInfoLuong(String idNV, float luongCoBan, int soNgayCong, float phuCap, float thuong) throws Exception {
+    String sql = "UPDATE BangLuong SET luongCoban = ?, soNgayCong = ?, phuCap = ?, Thuong = ? WHERE idNV = ?";
+    try (
+        PreparedStatement ps = JDBCConnection.getStmt(sql)
+    ) {
+        // Gán các tham số vào câu lệnh SQL
+        ps.setFloat(1, luongCoBan);
+        ps.setInt(2, soNgayCong);
+        ps.setFloat(3, phuCap);
+        ps.setFloat(4, thuong);
+        ps.setString(5, idNV);
+
+        // Thực thi câu lệnh SQL
+        int rowsAffected = ps.executeUpdate();
+        if (rowsAffected > 0) {
+            System.out.println("Cập nhật thông tin lương thành công cho nhân viên: " + idNV);
+        } else {
+            System.out.println("Không thể cập nhật thông tin lương. Mã nhân viên không tồn tại: " + idNV);
+        }
+    }
+}
 }

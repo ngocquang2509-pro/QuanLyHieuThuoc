@@ -17,6 +17,8 @@ import gui.page.VaiTroPage;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ButtonModel;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -39,7 +41,6 @@ public class MainLayout extends javax.swing.JFrame {
     private VaiTroPage vaiTro;
     private PhieuNhapPage phieuNhap;
     private ThongKePage thongke;
-
     public TaiKhoan tk;
 
     private List<JButton> listItem;
@@ -49,14 +50,14 @@ public class MainLayout extends javax.swing.JFrame {
     public MainLayout() {
         initComponents();
         fillInfo();
-        sideBarLayout();
-    }
+        sideBarLayout();    }
 
     public MainLayout(TaiKhoan tk) {
         this.tk = tk;
         initComponents();
         fillInfo();
         sideBarLayout();
+        LuongItem.setIcon(new FlatSVGIcon("./icon/money.svg"));
     }
 
     public void setPanel(JPanel pn) {
@@ -90,6 +91,7 @@ public class MainLayout extends javax.swing.JFrame {
         listItem.add(nhaCungCapItem);
         listItem.add(khachHangItem);
         listItem.add(nhanVienItem);
+        listItem.add(LuongItem);
         listItem.add(taiKhoanItem);
 //        listItem.add(phieuDatHang);
         listItem.add(vaiTroItem);
@@ -565,11 +567,18 @@ public class MainLayout extends javax.swing.JFrame {
     }//GEN-LAST:event_thongKeItemActionPerformed
 
     private void LuongItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LuongItemActionPerformed
-        // TODO add your handling code here:
-        LuongPage = new LuongPage();
-        this.setPanel(LuongPage);
+
+        try {
+            // TODO add your handling code here:
+            LuongPage = new LuongPage();
+            this.setPanel(LuongPage);
         resetActive();
         LuongItem.setSelected(true);
+        } catch (Exception ex) {
+            Logger.getLogger(MainLayout.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
     }//GEN-LAST:event_LuongItemActionPerformed
     
 

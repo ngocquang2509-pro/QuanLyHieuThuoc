@@ -1,10 +1,13 @@
 package gui.page;
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import connectDB.JDBCConnection;
 import controller.NhanVienController;
 import dao.NhanVienDAO;
 import entities.NhanVien;
+import gui.dialog.CreateLuong;
 import gui.dialog.CreateNhanVienDialog;
+import gui.dialog.EditLuong;
 import gui.dialog.UpdateNhanVienDialog;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +30,7 @@ import utils.TableSorter;
 public class LuongPage extends javax.swing.JPanel {
 
 
-    public LuongPage() {
+    public LuongPage() throws Exception {
         initComponents();
         headerLayout();
         tableLayout();
@@ -56,9 +59,9 @@ public class LuongPage extends javax.swing.JPanel {
         cboxSearch.setModel(model);
     }
 
-    private void tableLayout() {
+    private void tableLayout() throws Exception {
         lblTable.setText("danh sách lương nhân viên".toUpperCase());
-        String[] header = new String[]{"STT", "Mã nhân viên", "Lương"};
+        String[] header = new String[]{"STT", "Mã nhân viên","Tên nhân viên", "Lương"};
         DefaultTableModel modal = new DefaultTableModel();
         modal.setColumnIdentifiers(header);
         table.setModel(modal);
@@ -69,7 +72,16 @@ public class LuongPage extends javax.swing.JPanel {
         table.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
         table.getColumnModel().getColumn(0).setPreferredWidth(30);
         table.getColumnModel().getColumn(2).setPreferredWidth(200);
-
+        table.getColumnModel().getColumn(3).setCellRenderer(new DefaultTableCellRenderer() {
+        @Override
+        protected void setValue(Object value) {
+            if (value instanceof Number) {
+                setText(String.format("%,.0f", ((Number) value).doubleValue()));
+            } else {
+                super.setValue(value);
+            }
+        }
+    });
         loadTable();
         sortTable();
     }
@@ -79,10 +91,9 @@ public class LuongPage extends javax.swing.JPanel {
         TableSorter.configureTableColumnSorter(table, 0, TableSorter.STRING_COMPARATOR);
     }
 
-    public void loadTable() {
-        DefaultTableModel modal = (DefaultTableModel) table.getModel();
-        modal.setRowCount(0);
-
+    public void loadTable() throws Exception {
+        DefaultTableModel modal = JDBCConnection.selectAllLuong();
+        table.setModel(modal);
         
     }
 
@@ -301,10 +312,32 @@ public class LuongPage extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+        CreateLuong dialog;
+        try {
+            dialog = new CreateLuong(null, true, this);
+            dialog.setVisible(true);
+        } catch (Exception ex) {
+            Logger.getLogger(LuongPage.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
+       try {
+            int row = table.getSelectedRow();
+            String name = table.getValueAt(row, 2).toString();
+            EditLuong dialog;
+           try {
+            dialog = new EditLuong(null, true, this,name);
+            dialog.setVisible(true);
+        } catch (Exception ex) {
+            Logger.getLogger(LuongPage.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        } catch (Exception e) {
+            MessageDialog.error(this, "Vui lòng chọn dòng cần thực hiện!");
+        } 
+        
+        
         
     }//GEN-LAST:event_btnUpdateActionPerformed
 
@@ -327,7 +360,11 @@ public class LuongPage extends javax.swing.JPanel {
     private void btnReloadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReloadActionPerformed
         txtSearch.setText("");
         cboxSearch.setSelectedIndex(0);
-        loadTable();
+        try {
+            loadTable();
+        } catch (Exception ex) {
+            Logger.getLogger(LuongPage.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
     }//GEN-LAST:event_btnReloadActionPerformed
 
