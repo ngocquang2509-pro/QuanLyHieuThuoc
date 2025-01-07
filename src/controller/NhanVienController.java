@@ -55,7 +55,10 @@ public class NhanVienController extends InterfaceController<NhanVien, String> {
     public List<NhanVien> getAllList() {
         return NV_DAO.selectAll();
     }
-
+    //Phát ĐỖ
+    public List<NhanVien> getAllListFromView() {
+        return NV_DAO.selectAllFromView();
+    }
     public int getSoLuongNV() {
         return this.getAllList().size();
     }

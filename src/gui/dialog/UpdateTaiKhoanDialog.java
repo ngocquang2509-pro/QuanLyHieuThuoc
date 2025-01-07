@@ -55,28 +55,6 @@ public class UpdateTaiKhoanDialog extends javax.swing.JDialog {
         cboxVaiTro.setSelectedItem(tk.getVaiTro().getTen());
     }
 
-    private boolean isValidateFields() {
-        if (txtUsername.getText().trim().equals("") || txtUsername.getText().length() < 3) {
-            MessageDialog.warring(this, "Username không được để trống và có ít nhất 3 ký tự!");
-            txtUsername.requestFocus();
-            return false;
-        }
-
-        return true;
-    }
-
-    private TaiKhoan getInputFields() {
-        String id = tk.getId();
-        String username = tk.getUsername();
-        String password = tk.getPassword();
-        String idNV = tk.getNhanVien().getId();
-        NhanVien nhanVien = new NhanVienController().selectById(idNV);
-        String idVT = listVT.get(cboxVaiTro.getSelectedIndex() + 1).getId();
-        VaiTro vaiTro = new VaiTroController().selectById(idVT);
-
-        return new TaiKhoan(id, username, password, nhanVien, vaiTro);
-    }
-
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -163,6 +141,11 @@ public class UpdateTaiKhoanDialog extends javax.swing.JDialog {
         jPanel22.add(jLabel15);
 
         cboxVaiTro.setPreferredSize(new java.awt.Dimension(330, 40));
+        cboxVaiTro.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboxVaiTroActionPerformed(evt);
+            }
+        });
         jPanel22.add(cboxVaiTro);
 
         jPanel1.add(jPanel22);
@@ -215,14 +198,22 @@ public class UpdateTaiKhoanDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_btnHuyActionPerformed
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
-        if (isValidateFields()) {
-            TaiKhoan e = getInputFields();
-            TK_CON.update(e);
-            MessageDialog.info(this, "Cập nhập thành công!");
+        try {
+            String username = txtUsername.getText().trim();
+            String newRole = cboxVaiTro.getSelectedItem().toString();
+
+            TK_CON.updateUserRole(username, newRole);
+            MessageDialog.info(this, "Cập nhật vai trò thành công!");
             TK_GUI.loadTable(TK_CON.getAllList());
             this.dispose();
+        } catch (Exception e) {
+            MessageDialog.error(this, "Lỗi khi cập nhật vai trò: " + e.getMessage());
         }
     }//GEN-LAST:event_btnUpdateActionPerformed
+
+    private void cboxVaiTroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboxVaiTroActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cboxVaiTroActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

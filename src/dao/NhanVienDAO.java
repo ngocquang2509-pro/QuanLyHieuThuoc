@@ -84,7 +84,25 @@ public class NhanVienDAO extends InterfaceDAO<NhanVien, String> {
     public List<NhanVien> selectAll() {
         return this.selectBySql(SELECT_ALL_SQL);
     }
-
+    //Phát ĐỖ
+    public List<NhanVien> selectAllFromView() {
+        String sql = "SELECT * FROM View_ThemTaiKhoan";
+        List<NhanVien> list = new ArrayList<>();
+        try {
+            ResultSet rs = JDBCConnection.query(sql);
+            while (rs.next()) {
+                NhanVien nv = new NhanVien();
+                nv.setId(rs.getString("MaNhanVien"));
+                nv.setHoTen(rs.getString("HoTen"));
+                nv.setSdt(rs.getString("SoDienThoai"));
+                nv.setNgayVaoLam(rs.getDate("NgayVaoLam"));
+                list.add(nv);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
     @Override
     public NhanVien selectById(String id) {
         List<NhanVien> list = selectBySql(SELECT_BY_ID, id);
