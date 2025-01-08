@@ -1,6 +1,5 @@
 ﻿use qlht
 go
-
 ----------------------------------------
 CREATE TABLE LichSuXoa (
     id INT IDENTITY(1,1) PRIMARY KEY, -- ID tự tăng
@@ -32,6 +31,7 @@ go
 select * from View_TaiKhoan
 drop view View_TaiKhoan
 go
+
 ---Tạo view cho page thêm tài khoản
 CREATE VIEW View_ThemTaiKhoan
 AS
@@ -77,6 +77,7 @@ GRANT SELECT ON KhachHang TO nvsp;
 drop role nvbh
 drop role nvsp
 go
+
 -- Funtion
 --- Funtion tính toán thời gian chờ
 CREATE FUNCTION CalculateWaitingTime(@deleteTime DATETIME)
@@ -168,6 +169,7 @@ drop proc UpdateUserRole
 go
 SELECT name FROM sys.database_principals WHERE type = 'R';
 go
+
 --- Procedure xóa tài khoản quá hạn 30 ngày
 CREATE PROCEDURE DeleteExpiredAccounts
 AS
@@ -189,6 +191,7 @@ BEGIN
     DEALLOCATE expiredAccounts;
 END
 go
+
 --- Procedure xóa các tài khoản được chọn
 CREATE PROCEDURE DeleteAccounts
     @Ids NVARCHAR(MAX)
@@ -210,7 +213,8 @@ BEGIN
     END
 
     CLOSE @Cursor
-    DEALLOCATE @Cursor
+    DEALLOCATE @
+
 END
 go
 --Trigger
