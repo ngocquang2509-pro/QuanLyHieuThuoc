@@ -36,17 +36,14 @@ public class JDBCConnection {
     public static PreparedStatement getStmtWithUser(String sql,String username,String pass, Object... args) throws Exception {
         System.out.println(username);
         System.out.println(pass);
-        if(username.equals("phat")){
-            user = username;
-            password = pass;
-            System.out.println("connectDB.JDBCConnection.getStmtWithUser()");
-        }
-        Connection con = DriverManager.getConnection(url, user, password);
+        String userToUse = username.equals("admin") ? user : username;
+        String passwordToUse = username.equals("admin") ? password : pass;
+
+        Connection con = DriverManager.getConnection(url, userToUse, passwordToUse);
         PreparedStatement stmt;
         if (sql.trim().startsWith("{")) {
             stmt = con.prepareCall(sql);
-        } 
-        else {
+        } else {
             stmt = con.prepareStatement(sql);
         }
 
