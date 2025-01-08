@@ -45,17 +45,64 @@ public class TaiKhoanController extends InterfaceController<TaiKhoan, String> {
     public void update(TaiKhoan e) {
         TK_DAO.update(e);
     }
-
+    
     @Override
     public void deleteById(String id) {
         TK_DAO.deleteById(id);
     }
+    //Phát ĐỖ
+    public void deleteTaiKhoan(String id, String username) {
+    try {
+        TK_DAO.deleteById(id);
+        TK_DAO.deleteLoginAndUser(username);
+    } catch (Exception e) {
+        MessageDialog.error(TK_GUI, "Lỗi khi xóa tài khoản và người dùng: " + e.getMessage());
+      }
+    }
+    
+    public List<List<Object>> getDeletedAccounts() {
+        return TK_DAO.getDeletedAccounts();
+    }
 
+    public void restoreTaiKhoan(String username, String password) {
+        try {
+            TK_DAO.restoreTaiKhoan(username, password);
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Handle exception, e.g., show error message
+        }
+    }
+    
+    public void updateUserRole(String username, String newRole) {
+        try {
+            TK_DAO.updateUserRole(username, newRole);
+        } catch (Exception e) {
+            MessageDialog.error(TK_GUI, "Lỗi khi cập nhật vai trò: " + e.getMessage());
+        }
+    }
+    
+    public List<List<Object>> getExpiredAccounts() {
+        return TK_DAO.getExpiredAccounts();
+    }
+
+    public void deleteExpiredAccounts() {
+        TK_DAO.deleteExpiredAccounts();
+    }
+    
+    public void deleteAccounts(List<Integer> ids) {
+        TK_DAO.deleteAccounts(ids);
+    }
+    
     @Override
     public List<TaiKhoan> getAllList() {
         return TK_DAO.selectAll();
     }
-
+    public List<TaiKhoan> getAllListPhatDo() {
+        return TK_DAO.selectAllPhatDo();
+    }
+    public List<TaiKhoan> getAllListFromView() {
+        return TK_DAO.selectAllPhatDo();
+    }
     public List<NhanVien> getListNV() {
         List<NhanVien> result = new ArrayList<>();
 

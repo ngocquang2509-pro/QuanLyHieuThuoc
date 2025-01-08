@@ -52,7 +52,7 @@ public class CreateTaiKhoanDialog extends javax.swing.JDialog {
     }
 
     private void tableLayout() {
-        String[] header = new String[]{"STT", "Mã nhân viên", "Họ tên", "Số điện thoại", "Năm sinh"};
+        String[] header = new String[]{"STT", "Mã nhân viên", "Họ tên", "Số điện thoại", "Ngày vào làm"};
 
         modal = new DefaultTableModel();
         modal.setColumnIdentifiers(header);
@@ -76,13 +76,13 @@ public class CreateTaiKhoanDialog extends javax.swing.JDialog {
 
     public void loadTable() {
         modal.setRowCount(0);
-
-        List<NhanVien> listNV = new NhanVienController().getAllList();
+        NhanVienController controller = new NhanVienController();
+        List<NhanVien> listNV = new NhanVienController().getAllListFromView();
         List<NhanVien> listNVInTK = TK_CON.getListNV();
         int stt = 1;
         for (NhanVien e : listNV) {
             if (!listNVInTK.contains(e)) {
-                modal.addRow(new Object[]{String.valueOf(stt), e.getId(), e.getHoTen(), e.getSdt(), e.getNamSinh()});
+                modal.addRow(new Object[]{String.valueOf(stt), e.getId(), e.getHoTen(), e.getSdt(), e.getNgayVaoLam()});
             }
             stt++;
         }

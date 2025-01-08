@@ -7,6 +7,7 @@ import controller.VaiTroController;
 import entities.TaiKhoan;
 import entities.VaiTro;
 import gui.dialog.CreateTaiKhoanDialog;
+import gui.dialog.DeletedAccountDialog;
 import gui.dialog.UpdateTaiKhoanDialog;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +28,8 @@ public class TaiKhoanPage extends javax.swing.JPanel {
 
     private final TaiKhoanController TK_CON = new TaiKhoanController(this);
     private List<TaiKhoan> listTK = TK_CON.getAllList();
-    
+    private List<TaiKhoan> listTKPhatDo = TK_CON.getAllListPhatDo();
+
     private final List<VaiTro> listVT = new VaiTroController().getAllList();
 
     DefaultTableModel modal;
@@ -44,7 +46,7 @@ public class TaiKhoanPage extends javax.swing.JPanel {
         listButton.add(btnAdd);
         listButton.add(btnUpdate);
         listButton.add(btnDelete);
-        listButton.add(btnInfo);
+        listButton.add(btnViewDeleted);
         listButton.add(btnImport);
         listButton.add(btnExport);
 
@@ -77,7 +79,7 @@ public class TaiKhoanPage extends javax.swing.JPanel {
         table.getColumnModel().getColumn(0).setPreferredWidth(30);
         table.getColumnModel().getColumn(2).setPreferredWidth(200);
 
-        loadTable(listTK);
+        loadTableFromView();
         sortTable();
     }
 
@@ -89,13 +91,22 @@ public class TaiKhoanPage extends javax.swing.JPanel {
     public void loadTable(List<TaiKhoan> list) {
         modal.setRowCount(0);
 
-        listTK = list;
+        listTKPhatDo = list;
         int stt = 1;
-        for (TaiKhoan e : listTK) {
+        for (TaiKhoan e : listTKPhatDo) {
             modal.addRow(new Object[]{String.valueOf(stt), e.getId(), e.getUsername(), e.getPassword(), e.getNhanVien().getHoTen(), e.getVaiTro().getTen()});
             stt++;
         }
     }
+    
+    public void loadTableFromView() {
+    List<TaiKhoan> list = TK_CON.getAllListFromView();
+    modal.setRowCount(0);
+    int stt = 1;
+    for (TaiKhoan e : list) {
+        modal.addRow(new Object[]{stt++, e.getId(), e.getUsername(), e.getPassword(), e.getNhanVien().getHoTen(), e.getVaiTro().getTen()});
+    }
+}
     
     
     private void fillCombobox() {
@@ -129,7 +140,7 @@ public class TaiKhoanPage extends javax.swing.JPanel {
         btnAdd = new javax.swing.JButton();
         btnUpdate = new javax.swing.JButton();
         btnDelete = new javax.swing.JButton();
-        btnInfo = new javax.swing.JButton();
+        btnViewDeleted = new javax.swing.JButton();
         btnImport = new javax.swing.JButton();
         btnExport = new javax.swing.JButton();
         tablePanel = new javax.swing.JPanel();
@@ -249,17 +260,24 @@ public class TaiKhoanPage extends javax.swing.JPanel {
         });
         actionPanel.add(btnDelete);
 
-        btnInfo.setFont(new java.awt.Font("Roboto", 1, 14)); // NOI18N
-        btnInfo.setIcon(new FlatSVGIcon("./icon/info.svg"));
-        btnInfo.setText("INFO");
-        btnInfo.setBorder(null);
-        btnInfo.setBorderPainted(false);
-        btnInfo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnInfo.setFocusPainted(false);
-        btnInfo.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnInfo.setPreferredSize(new java.awt.Dimension(90, 90));
-        btnInfo.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        actionPanel.add(btnInfo);
+        btnViewDeleted.setFont(new java.awt.Font("Roboto", 1, 14)); // NOI18N
+        btnViewDeleted.setIcon(new FlatSVGIcon("./icon/info.svg"));
+        btnViewDeleted.setText("Lịch sử xóa");
+        btnViewDeleted.setBorder(null);
+        btnViewDeleted.setBorderPainted(false);
+        btnViewDeleted.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnViewDeleted.setFocusPainted(false);
+        btnViewDeleted.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnViewDeleted.setMaximumSize(new java.awt.Dimension(120, 19));
+        btnViewDeleted.setMinimumSize(new java.awt.Dimension(120, 19));
+        btnViewDeleted.setPreferredSize(new java.awt.Dimension(90, 90));
+        btnViewDeleted.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnViewDeleted.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnViewDeletedActionPerformed(evt);
+            }
+        });
+        actionPanel.add(btnViewDeleted);
 
         btnImport.setFont(new java.awt.Font("Roboto", 1, 14)); // NOI18N
         btnImport.setIcon(new FlatSVGIcon("./icon/import.svg"));
@@ -402,14 +420,15 @@ public class TaiKhoanPage extends javax.swing.JPanel {
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         try {
-            int row = table.getSelectedRow();
-            String id = table.getValueAt(row, 1).toString();
+        int row = table.getSelectedRow();
+        String id = table.getValueAt(row, 1).toString(); // Cột 1 là ID
+        String username = table.getValueAt(row, 2).toString(); // Cột 2 là Username
 
-            if (MessageDialog.confirm(this, "Bạn có chắc chắn xóa dòng này?", "Xóa")) {
-                TK_CON.deleteById(id);
-                MessageDialog.info(this, "Xóa thành công!");
-                modal.removeRow(row);
-            }
+        if (MessageDialog.confirm(this, "Bạn có chắc chắn xóa dòng này?", "Xóa")) {
+            TK_CON.deleteTaiKhoan(id, username);
+            MessageDialog.info(this, "Xóa thành công!");
+            modal.removeRow(row);
+        }
         } catch (Exception e) {
             MessageDialog.error(this, "Vui lòng chọn dòng cần thực hiện!");
         }
@@ -436,7 +455,7 @@ public class TaiKhoanPage extends javax.swing.JPanel {
     private void btnReloadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReloadActionPerformed
         txtSearch.setText("");
         cboxSearch.setSelectedIndex(0);
-        loadTable(listTK);
+        loadTable(listTKPhatDo);
     }//GEN-LAST:event_btnReloadActionPerformed
 
     private void cboxVaiTroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboxVaiTroActionPerformed
@@ -452,6 +471,11 @@ public class TaiKhoanPage extends javax.swing.JPanel {
         loadTable(listSearch);
     }//GEN-LAST:event_cboxVaiTroActionPerformed
 
+    private void btnViewDeletedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewDeletedActionPerformed
+       DeletedAccountDialog dialog = new DeletedAccountDialog(null, true, this); 
+        dialog.setVisible(true);
+    }//GEN-LAST:event_btnViewDeletedActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel actionPanel;
@@ -459,9 +483,9 @@ public class TaiKhoanPage extends javax.swing.JPanel {
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnExport;
     private javax.swing.JButton btnImport;
-    private javax.swing.JButton btnInfo;
     private javax.swing.JButton btnReload;
     private javax.swing.JButton btnUpdate;
+    private javax.swing.JButton btnViewDeleted;
     private javax.swing.JComboBox<String> cboxSearch;
     private javax.swing.JComboBox<String> cboxVaiTro;
     private javax.swing.JPanel headerPanel;
