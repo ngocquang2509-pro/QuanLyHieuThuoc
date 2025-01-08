@@ -3,11 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/D:/Workspace/TLU/N3/HeQuanTriCSDL/QuanLyHieuThuoc/src/gui/dialog/CreateTaiKhoanDialog.java</file>
             <file>file:/D:/Workspace/TLU/N3/HeQuanTriCSDL/QuanLyHieuThuoc/src/controller/TaiKhoanController.java</file>
             <file>file:/D:/Workspace/TLU/N3/HeQuanTriCSDL/QuanLyHieuThuoc/src/connectDB/JDBCConnection.java</file>
             <file>file:/D:/Workspace/TLU/N3/HeQuanTriCSDL/QuanLyHieuThuoc/src/gui/page/TaiKhoanPage.java</file>
             <file>file:/D:/Workspace/TLU/N3/HeQuanTriCSDL/QuanLyHieuThuoc/src/dao/TaiKhoanDAO.java</file>
-            <file>file:/D:/Workspace/TLU/N3/HeQuanTriCSDL/QuanLyHieuThuoc/src/gui/dialog/DeletedAccountDialog.java</file>
         </group>
     </open-files>
 </project-private>

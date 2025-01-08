@@ -45,6 +45,29 @@ FROM NhanVien;
 go
 select * from View_ThemTaiKhoan
 
+-- Tạo role nvql
+CREATE ROLE nvql;
+
+-- Cho phép tạo, sửa người dùng trong cơ sở dữ liệu
+GRANT CREATE USER TO nvql;  -- Tạo user
+GRANT ALTER ANY USER TO nvql; -- Chỉnh sửa user
+
+-- Cấp quyền SELECT, INSERT, UPDATE, DELETE trên tất cả các bảng
+GRANT SELECT, INSERT, UPDATE, DELETE ON DATABASE::[qlht] TO nvql;
+
+-- Cấp quyền EXECUTE trên tất cả các thủ tục và hàm
+GRANT EXECUTE ON DATABASE::[qlht] TO nvql;
+
+-- Cấp quyền SELECT trên tất cả các view
+GRANT SELECT ON SCHEMA::dbo TO nvql;
+
+-- Cho phép sử dụng con trỏ và quyền kiểm soát cơ sở dữ liệu
+GRANT CONTROL ON DATABASE::[qlht] TO nvql;  -- Toàn quyền trong cơ sở dữ liệu (bao gồm quyền xóa, sửa)
+
+-- Cấp quyền quản lý vai trò (Role Management)
+GRANT ALTER ANY ROLE TO nvql;  -- Cho phép chỉnh sửa các vai trò
+
+
 -- Tạo vai trò NVBH (Nhân viên bán hàng)
 CREATE ROLE nvbh;
 GRANT SELECT, INSERT, DELETE ON HoaDon TO nvbh;
@@ -74,6 +97,7 @@ GRANT SELECT ON VaiTro TO nvsp;
 GRANT SELECT ON NhanVien TO nvsp;
 GRANT SELECT ON KhachHang TO nvsp;
 
+drop role nvql
 drop role nvbh
 drop role nvsp
 go
@@ -218,7 +242,7 @@ BEGIN
 END
 go
 --Trigger
-
+go
 --- Trigger tự động tạo TK và gán quyền
 CREATE TRIGGER trg_CreateLoginAfterInsert
 ON TaiKhoan
@@ -229,20 +253,25 @@ BEGIN
     DECLARE @password NVARCHAR(50);
     DECLARE @role NVARCHAR(50);
 
+    -- Lấy thông tin người dùng từ bảng inserted
     SELECT @username = username, @password = password, @role = idVT
     FROM inserted;
 
-    -- Tạo tài khoản đăng nhập trong SQL Server
+    -- Tạo tài khoản đăng nhập trong SQL Server (tạo login)
     DECLARE @sql NVARCHAR(MAX);
     SET @sql = 'CREATE LOGIN [' + @username + '] WITH PASSWORD = ''' + @password + ''';';
-	print @password;
+    PRINT @sql; -- Kiểm tra câu lệnh được sinh ra
     EXEC sp_executesql @sql;
 
-    -- Tạo người dùng trong cơ sở dữ liệu
+    -- Tạo người dùng trong cơ sở dữ liệu (tạo user trong cơ sở dữ liệu)
     SET @sql = 'CREATE USER [' + @username + '] FOR LOGIN [' + @username + '];';
     EXEC sp_executesql @sql;
 
     -- Gán quyền cho người dùng dựa trên vai trò
+    IF @role = 'nvql'
+    BEGIN
+        SET @sql = 'ALTER ROLE [nvql] ADD MEMBER [' + @username + '];';
+    END    
     IF @role = 'nvbh'
     BEGIN
         SET @sql = 'ALTER ROLE [nvbh] ADD MEMBER [' + @username + '];';
@@ -253,6 +282,18 @@ BEGIN
     END
 
     EXEC sp_executesql @sql;
+
+    -- Cấp quyền trên cấp máy chủ (Server-level permissions) cho tài khoản đăng nhập @username
+    IF @role = 'nvql'
+    BEGIN
+        -- Cấp quyền CREATE LOGIN cho tài khoản @username
+        SET @sql = 'USE master; GRANT CREATE LOGIN TO [' + @username + '];';
+        EXEC sp_executesql @sql;
+
+        -- Cấp quyền ALTER ANY LOGIN cho tài khoản @username
+        SET @sql = 'USE master; GRANT ALTER ANY LOGIN TO [' + @username + '];';
+        EXEC sp_executesql @sql;
+    END
 END
 drop trigger trg_CreateLoginAfterInsert
 go
@@ -270,5 +311,46 @@ END
 go
 drop trigger trg_InsertDeletedAccounts
 select * from LichSuXoa
-
 go
+---Trigger thu hồi quyền khi vai trò thay đổi
+CREATE TRIGGER trg_UpdateUserRole
+ON TaiKhoan
+AFTER UPDATE
+AS
+BEGIN
+	DECLARE @username NVARCHAR(50);
+    DECLARE @oldRole NVARCHAR(50);
+    DECLARE @newRole NVARCHAR(50);
+    DECLARE @sql NVARCHAR(MAX);
+
+    -- Lấy thông tin người dùng và vai trò cũ, mới từ bảng inserted và deleted
+    SELECT 
+        @username = i.username, 
+        @oldRole = (SELECT ten FROM VaiTro WHERE idVT = d.idVT),
+        @newRole = (SELECT ten FROM VaiTro WHERE idVT = i.idVT)
+    FROM inserted i
+    JOIN deleted d ON i.username = d.username;
+
+    -- Kiểm tra nếu vai trò mới không phải là nvql và vai trò cũ là nvql
+    IF @oldRole = 'nvql' AND @newRole != 'nvql'
+    BEGIN
+        -- Thu hồi quyền CREATE LOGIN và ALTER ANY LOGIN nếu vai trò không phải là nvql
+        SET @sql = 'USE master; REVOKE CREATE LOGIN FROM [' + @username + '];';
+        EXEC sp_executesql @sql;
+
+        SET @sql = 'USE master; REVOKE ALTER ANY LOGIN FROM [' + @username + '];';
+        EXEC sp_executesql @sql;
+    END
+
+    -- Nếu vai trò mới là nvql và vai trò cũ không phải là nvql, cấp quyền CREATE LOGIN và ALTER ANY LOGIN
+    IF @newRole = 'nvql' AND @oldRole != 'nvql'
+    BEGIN
+        SET @sql = 'USE master; GRANT CREATE LOGIN TO [' + @username + '];';
+        EXEC sp_executesql @sql;
+
+        SET @sql = 'USE master; GRANT ALTER ANY LOGIN TO [' + @username + '];';
+        EXEC sp_executesql @sql;
+    END
+END
+GO
+drop trigger trg_UpdateUserRole
