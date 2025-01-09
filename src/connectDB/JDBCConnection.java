@@ -83,7 +83,7 @@ public class JDBCConnection {
             throw new RuntimeException(e);
         }
     }
-
+    
     public static ResultSet query(String sql, Object... args) throws Exception {
         PreparedStatement stmt = JDBCConnection.getStmt(sql, args);
         return stmt.executeQuery();

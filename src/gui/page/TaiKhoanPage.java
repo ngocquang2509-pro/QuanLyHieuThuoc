@@ -39,6 +39,7 @@ public class TaiKhoanPage extends javax.swing.JPanel {
         headerLayout();
         tableLayout();
         fillCombobox();
+        btnViewDeleted.setIcon(new FlatSVGIcon("./icon/thungrac.svg"));
     }
 
     private void headerLayout() {

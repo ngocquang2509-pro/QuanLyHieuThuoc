@@ -10,6 +10,10 @@ CREATE TABLE LichSuXoa (
     deleteTime DATETIME NOT NULL      -- Thời gian xóa
 );
 go
+ALTER TABLE LichSuXoa
+ADD CONSTRAINT FK_LichSuXoa_NhanVien FOREIGN KEY (idNV) REFERENCES NhanVien(idNV),
+    CONSTRAINT FK_LichSuXoa_VaiTro FOREIGN KEY (idVT) REFERENCES VaiTro(idVT);
+go
 -----------------------------------------
 --View
 ---Tạo View cho page Tài khoản
@@ -111,6 +115,11 @@ BEGIN
     RETURN DATEDIFF(DAY, @deleteTime, GETDATE());
 END
 go
+
+SELECT id, username, deleteTime, dbo.CalculateWaitingTime(deleteTime) AS WaitingDays
+FROM LichSuXoa
+WHERE dbo.CalculateWaitingTime(deleteTime) > 30;
+
 --- Function trả về 1 bảng các tài khoản quá hạn 30 ngày 
 CREATE FUNCTION GetExpiredAccounts()
 RETURNS TABLE
@@ -122,6 +131,9 @@ RETURN
     WHERE dbo.CalculateWaitingTime(deleteTime) > 30
 );
 go
+
+SELECT * 
+FROM dbo.GetExpiredAccounts();
 
 --Procedure
 ---Procedure xóa người dùng và tài khoản khi tài khoản bị xóa trong bảng
@@ -237,7 +249,7 @@ BEGIN
     END
 
     CLOSE @Cursor
-    DEALLOCATE @
+    DEALLOCATE @Cursor
 
 END
 go
@@ -309,6 +321,7 @@ BEGIN
     FROM deleted;
 END
 go
+
 drop trigger trg_InsertDeletedAccounts
 select * from LichSuXoa
 go
